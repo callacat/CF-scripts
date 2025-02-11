@@ -55,23 +55,26 @@ class PushPlusNotificationProvider {
 
 // Main worker logic
 export default {
-  async fetch(request, env, ctx) {
+  async scheduled(event, env, ctx) {
     try {
       const gameNames = (env.GAME_NAMES || '').split(',').map((name) => name.trim()).filter((name) => name !== '');
       const notificationType = env.NOTIFICATION_TYPE; // 'telegram' or 'pushplus'
 
       if (!gameNames.length) {
-        return new Response('GAME_NAMES environment variable not set or empty', { status: 500 });
+        console.log('GAME_NAMES environment variable not set or empty');
+        return;
       }
       if (!notificationType) {
-        return new Response('NOTIFICATION_TYPE environment variable not set', { status: 500 });
+        console.log('NOTIFICATION_TYPE environment variable not set');
+        return;
       }
 
       const websiteUrl = 'https://byrutgame.org/lastversion-pcgame/';
       const response = await fetch(websiteUrl);
 
       if (!response.ok) {
-        return new Response(`Failed to fetch website: ${response.status}`, { status: 500 });
+        console.error(`Failed to fetch website: ${response.status}`);
+        return;
       }
 
       const html = await response.text();
@@ -97,7 +100,8 @@ export default {
         const notificationTypes = (env.NOTIFICATION_TYPE || '').split(',').map(type => type.trim()).filter(type => type !== '');
 
         if (notificationTypes.length === 0) {
-            return new Response('No notification types configured', { status: 200 }); // Or 204 No Content
+            console.log('No notification types configured');
+            return;
         }
 
         for (const notificationType of notificationTypes) {
@@ -128,13 +132,13 @@ export default {
             }
         }
 
-        return new Response(`Notification(s) sent for ${foundGames.length} game(s)`);
+        console.log(`Notification(s) sent for ${foundGames.length} game(s)`);
+      } else {
+        console.log(`No updates found for the specified games`);
       }
 
-      return new Response(`No updates found for the specified games`);
-
     } catch (error) {
-      return new Response(`Error: ${error.message}`, { status: 500 });
+      console.error(`Error: ${error.message}`);
     }
   },
 };

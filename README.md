@@ -18,16 +18,18 @@
     *   在 Worker 设置中，转到 "Settings" -> "Variables"。
     *   添加以下环境变量：
         *   `GAME_NAMES`：您要跟踪的游戏名称的逗号分隔列表（例如，"Creeper World IXE, Another Game, Yet Another Game"）。**重要提示：** 使用网站上显示的确切名称。
-        *   `NOTIFICATION_TYPE`：您要使用的通知方法的逗号分隔列表。支持的值为：
-            *   `telegram`：用于 Telegram 通知。
-            *   `pushplus`：用于 PushPlus 通知。
+        *   `NOTIFICATION_TYPE`：要使用的通知方法的逗号分隔列表。支持的值为：`telegram`，`pushplus`。示例：`"telegram,pushplus"` 以同时启用两者。留空以禁用通知。
         *   如果 `NOTIFICATION_TYPE` 包含 `telegram`：
             *   `TELEGRAM_BOT_TOKEN`：您的 Telegram 机器人令牌。
             *   `TELEGRAM_CHAT_ID`：您的 Telegram 聊天 ID。
         *   如果 `NOTIFICATION_TYPE` 包含 `pushplus`：
             *   `PUSHPLUS_TOKEN`：您的 PushPlus 令牌。
 
-4.  **保存并部署：**
+4.  **设置 Cron 触发器：**
+    *   在 Worker 设置中，转到 "Triggers" -> "Cron"。
+    *   添加 Cron 触发器以计划脚本定期运行（例如，`*/5 * * * *` 每 5 分钟运行一次）。
+
+5.  **保存并部署：**
     *   单击 "Save and deploy"。
 
 ## 获取 API 密钥和令牌
@@ -54,6 +56,7 @@
     *   登录您的 PushPlus 帐户。
     *   您的令牌将显示在网站上。这是您的 `PUSHPLUS_TOKEN`。
 
+
 ## 添加更多通知方法
 
 该脚本设计为易于扩展。要添加新的通知方法：
@@ -63,11 +66,12 @@
 
 ## 示例
 
-假设您要跟踪 "Creeper World IXE" 和 "Another Game" 并通过 Telegram 接收通知。您的环境变量将如下所示：
+假设您要跟踪 "Creeper World IXE" 和 "Another Game" 并通过 Telegram 和 PushPlus 接收通知。您的环境变量将如下所示：
 
 *   `GAME_NAMES`：`Creeper World IXE, Another Game`
-*   `NOTIFICATION_TYPE`：`telegram`
+*   `NOTIFICATION_TYPE`：`telegram,pushplus`
 *   `TELEGRAM_BOT_TOKEN`：`您的 Telegram 机器人令牌`
 *   `TELEGRAM_CHAT_ID`：`您的 Telegram 聊天 ID`
+*   `PUSHPLUS_TOKEN`：`您的 PushPlus 令牌`
 
-部署后，Worker 将定期检查网站，如果找到 "Creeper World IXE" 或 "Another Game" 的更新，则发送 Telegram 消息。
+部署后，Worker 将定期检查网站，如果找到 "Creeper World IXE" 或 "Another Game" 的更新，则通过 Telegram 和 PushPlus 发送通知。

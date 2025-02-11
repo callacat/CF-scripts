@@ -12,23 +12,26 @@ This Cloudflare Worker script checks for updates to a specified game on [https:/
     *   Give your worker a name (e.g., "game-update-checker").
 
 2.  **Copy the Script:**
-    *   Copy the contents of `worker.js` and paste it into the Cloudflare Worker editor, replacing the default code.
+    *   Copy the contents of `game-check.js` and paste it into the Cloudflare Worker editor, replacing the default code.
 
 3.  **Configure Environment Variables:**
     *   In the Worker settings, go to "Settings" -> "Variables".
     *   Add the following environment variables:
         *   `GAME_NAMES`: A comma-separated list of the names of the games you want to track (e.g., "Creeper World IXE, Another Game, Yet Another Game"). **Important:** Use the exact names as they appear on the website.
-        *   `NOTIFICATION_TYPE`: A comma-separated list of the notification methods you want to use. Supported values are:
-            *   `telegram`: For Telegram notifications.
-            *   `pushplus`: For PushPlus notifications.
+        *   `NOTIFICATION_TYPE`: A comma-separated list of notification methods to use. Supported values are: `telegram`, `pushplus`.  Example: `"telegram,pushplus"` to enable both. Leave empty to disable notifications.
         *   If `NOTIFICATION_TYPE` includes `telegram`:
             *   `TELEGRAM_BOT_TOKEN`: Your Telegram bot token.
             *   `TELEGRAM_CHAT_ID`: Your Telegram chat ID.
         *   If `NOTIFICATION_TYPE` includes `pushplus`:
             *   `PUSHPLUS_TOKEN`: Your PushPlus token.
 
-4.  **Save and Deploy:**
+4.  **Set a Cron Trigger:**
+     * In the Worker settings, go to "Triggers" -> "Cron".
+     * Add a cron trigger to schedule the script to run periodically (e.g., `*/5 * * * *` to run every 5 minutes).
+
+5.  **Save and Deploy:**
     *   Click "Save and deploy".
+
 
 ## Obtaining API Keys and Tokens
 
@@ -54,6 +57,7 @@ This Cloudflare Worker script checks for updates to a specified game on [https:/
     *   Log in to your PushPlus account.
     *   Your token will be displayed on the website. This is your `PUSHPLUS_TOKEN`.
 
+
 ## Adding More Notification Methods
 
 The script is designed to be easily extensible. To add a new notification method:
@@ -63,11 +67,12 @@ The script is designed to be easily extensible. To add a new notification method
 
 ## Example
 
-Let's say you want to track "Creeper World IXE" and "Another Game" and receive notifications via Telegram. Your environment variables would look like this:
+Let's say you want to track "Creeper World IXE" and "Another Game" and receive notifications via Telegram and PushPlus. Your environment variables would look like this:
 
 *   `GAME_NAMES`: `Creeper World IXE, Another Game`
-*   `NOTIFICATION_TYPE`: `telegram`
+*   `NOTIFICATION_TYPE`: `telegram,pushplus`
 *   `TELEGRAM_BOT_TOKEN`: `your_telegram_bot_token`
 *   `TELEGRAM_CHAT_ID`: `your_telegram_chat_id`
+*   `PUSHPLUS_TOKEN`: `your_pushplus_token`
 
-Once deployed, the worker will periodically check the website and send a Telegram message if an update for "Creeper World IXE" or "Another Game" is found.
+Once deployed, the worker will periodically check the website and send notifications via Telegram and PushPlus if updates for "Creeper World IXE" or "Another Game" are found.
