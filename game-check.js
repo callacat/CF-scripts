@@ -62,11 +62,11 @@ export default {
 
       if (!gameNames.length) {
         console.log('GAME_NAMES environment variable not set or empty');
-        return;
+        return new Response('GAME_NAMES environment variable not set or empty', { status: 400 }); // Return Response
       }
       if (!notificationType) {
         console.log('NOTIFICATION_TYPE environment variable not set');
-        return;
+        return new Response('NOTIFICATION_TYPE environment variable not set', { status: 400 }); // Return Response
       }
 
       const websiteUrl = 'https://byrutgame.org/lastversion-pcgame/';
@@ -74,7 +74,7 @@ export default {
 
       if (!response.ok) {
         console.error(`Failed to fetch website: ${response.status}`);
-        return;
+        return new Response(`Failed to fetch website: ${response.status}`, { status: 500 }); // Return Response
       }
 
       const html = await response.text();
@@ -101,7 +101,7 @@ export default {
 
         if (notificationTypes.length === 0) {
             console.log('No notification types configured');
-            return;
+            return new Response('No notification types configured', { status: 200 }); // Return Response
         }
 
         for (const notificationType of notificationTypes) {
@@ -132,13 +132,13 @@ export default {
             }
         }
 
-        console.log(`Notification(s) sent for ${foundGames.length} game(s)`);
-      } else {
-        console.log(`No updates found for the specified games`);
+        return new Response(`Notification(s) sent for ${foundGames.length} game(s)`, { status: 200 }); // Return Response
       }
 
+      return new Response(`No updates found for the specified games`, { status: 200 }); // Return Response
+
     } catch (error) {
-      console.error(`Error: ${error.message}`);
+      return new Response(`Error: ${error.message}`, { status: 500 }); // Return Response
     }
   },
 };
