@@ -55,7 +55,7 @@ class PushPlusNotificationProvider {
 
 // Main worker logic
 export default {
-  async scheduled(event, env, ctx) {
+  async fetch(request, env, ctx) {
     try {
       const gameNames = (env.GAME_NAMES || '').split(',').map((name) => name.trim()).filter((name) => name !== '');
       const notificationType = env.NOTIFICATION_TYPE; // 'telegram' or 'pushplus'

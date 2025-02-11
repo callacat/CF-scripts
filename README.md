@@ -25,11 +25,7 @@
         *   如果 `NOTIFICATION_TYPE` 包含 `pushplus`：
             *   `PUSHPLUS_TOKEN`：您的 PushPlus 令牌。
 
-4.  **设置 Cron 触发器：**
-    *   在 Worker 设置中，转到 "Triggers" -> "Cron"。
-    *   添加 Cron 触发器以计划脚本定期运行（例如，`*/5 * * * *` 每 5 分钟运行一次）。
-
-5.  **保存并部署：**
+4.  **保存并部署：**
     *   单击 "Save and deploy"。
 
 ## 获取 API 密钥和令牌
@@ -54,7 +50,7 @@
 
 2.  **获取您的令牌：**
     *   登录您的 PushPlus 帐户。
-    *   您的令牌将显示在网站上。这是您的 `PUSHPLUS_TOKEN`。
+    *   您的令牌将显示在网站上。 这是您的 `PUSHPLUS_TOKEN`。
 
 
 ## 添加更多通知方法
@@ -63,6 +59,19 @@
 
 1.  创建一个实现 `NotificationProvider` 接口的新类（您必须直接修改 JavaScript 代码，因为为了兼容性，该接口已被删除）。该类应具有一个 `notify` 方法，该方法将游戏名称和 URL 作为参数。
 2.  在 `fetch` 函数中添加一个新的 `else if` 块，以检查新的 `NOTIFICATION_TYPE` 并创建您的新通知提供程序类的实例。
+
+## 调用 Worker
+
+可以通过两种方式调用此 worker：
+
+1.  **HTTP 请求：** 您可以将 HTTP 请求发送到 worker 的 URL。这对于测试或按需检查非常有用。
+2.  **Cron 触发器（计划）：** 您可以在 Cloudflare Worker 设置中设置 cron 触发器以计划脚本定期运行。
+
+### 设置 Cron 触发器（可选）：
+
+1.  在 Worker 设置中，转到 "Triggers" -> "Cron"。
+2.  添加 Cron 触发器以计划脚本定期运行（例如，`*/5 * * * *` 每 5 分钟运行一次）。
+
 
 ## 示例
 
@@ -74,4 +83,4 @@
 *   `TELEGRAM_CHAT_ID`：`您的 Telegram 聊天 ID`
 *   `PUSHPLUS_TOKEN`：`您的 PushPlus 令牌`
 
-部署后，Worker 将定期检查网站，如果找到 "Creeper World IXE" 或 "Another Game" 的更新，则通过 Telegram 和 PushPlus 发送通知。
+部署后，Worker 将在调用时（通过 HTTP 或 cron 触发器）检查网站，并在找到 "Creeper World IXE" 或 "Another Game" 的更新时通过 Telegram 和 PushPlus 发送通知。

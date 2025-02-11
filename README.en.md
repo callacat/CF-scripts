@@ -1,6 +1,6 @@
 # Cloudflare Worker Game Update Checker
 
-This Cloudflare Worker script checks for updates to a specified game on [https://byrutgame.org/lastversion-pcgame/](https://byrutgame.org/lastversion-pcgame/) and sends notifications when an update is found.
+This Cloudflare Worker script checks for updates to specified games on [https://byrutgame.org/lastversion-pcgame/](https://byrutgame.org/lastversion-pcgame/) and sends notifications when updates are found.
 
 ## Deployment
 
@@ -25,11 +25,7 @@ This Cloudflare Worker script checks for updates to a specified game on [https:/
         *   If `NOTIFICATION_TYPE` includes `pushplus`:
             *   `PUSHPLUS_TOKEN`: Your PushPlus token.
 
-4.  **Set a Cron Trigger:**
-     * In the Worker settings, go to "Triggers" -> "Cron".
-     * Add a cron trigger to schedule the script to run periodically (e.g., `*/5 * * * *` to run every 5 minutes).
-
-5.  **Save and Deploy:**
+4.  **Save and Deploy:**
     *   Click "Save and deploy".
 
 
@@ -65,6 +61,19 @@ The script is designed to be easily extensible. To add a new notification method
 1.  Create a new class that implements the `NotificationProvider` interface (you would have to modify the JavaScript code directly, as the interface was removed for compatibility). The class should have a `notify` method that takes the game name and URL as arguments.
 2.  Add a new `else if` block in the `fetch` function to check for the new `NOTIFICATION_TYPE` and create an instance of your new notification provider class.
 
+## Invoking the Worker
+
+This worker can be invoked in two ways:
+
+1.  **HTTP Requests:** You can send HTTP requests to the worker's URL. This is useful for testing or on-demand checks.
+2.  **Cron Triggers (Scheduled):** You can set up a cron trigger in the Cloudflare Worker settings to run the script periodically.
+
+### Setting up a Cron Trigger (Optional):
+
+1.  In the Worker settings, go to "Triggers" -> "Cron".
+2.  Add a cron trigger to schedule the script to run periodically (e.g., `*/5 * * * *` to run every 5 minutes).
+
+
 ## Example
 
 Let's say you want to track "Creeper World IXE" and "Another Game" and receive notifications via Telegram and PushPlus. Your environment variables would look like this:
@@ -75,4 +84,4 @@ Let's say you want to track "Creeper World IXE" and "Another Game" and receive n
 *   `TELEGRAM_CHAT_ID`: `your_telegram_chat_id`
 *   `PUSHPLUS_TOKEN`: `your_pushplus_token`
 
-Once deployed, the worker will periodically check the website and send notifications via Telegram and PushPlus if updates for "Creeper World IXE" or "Another Game" are found.
+Once deployed, the worker will check the website when invoked (either via HTTP or cron trigger) and send notifications via Telegram and PushPlus if updates for "Creeper World IXE" or "Another Game" are found.
